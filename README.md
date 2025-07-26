@@ -120,8 +120,15 @@ These results indicate a strong model performance with relatively low error comp
 
 ## 💾 Model Persistence
 
-  * Model saved to: forecasting_ev_model.pkl
+  * Model saved to: `forecasting_ev_model.pkl`.
   * Successfully reloaded and tested.
+
+  To avoid retraining:
+   
+   ```bash
+   from joblib import load
+   model = load('forecasting_ev_model.pkl')
+   ```
 
 ---
 
@@ -149,10 +156,6 @@ Includes:
 - Forecasted next 3 years for the top 5 counties (based on cumulative EV adoption)
 - Combined historical and future trendlines
 - Visual comparison of growth rates across counties
-
----
-
-## 📌 Sample Output
 
 ---
 
@@ -220,17 +223,6 @@ Includes:
   - Los Angeles
   - Orange
   - Santa Clara
-
----
-
-## 💾 Model Persistence
-   
-   To avoid retraining:
-   
-   ```bash
-   from joblib import load
-   model = load('forecasting_ev_model.pkl')
-   ```
 
 ---
 
