@@ -123,9 +123,72 @@ Includes:
 
 ---
 
-## 📊 Feature Importance Plot
-   
-   The script will generate a bar chart showing which features were most impactful in the model's predictions.
+## 📊 Visualizations
+
+  ### 🔹 EV Breakdown vs Total Vehicles
+  
+  <img width="722" height="526" alt="Screenshot 2025-07-27 020318" src="https://github.com/user-attachments/assets/a4b65ff5-56e4-4271-9635-74b2cf665eed" />
+
+  Stacked column chart comparing:
+  - BEV (Battery Electric Vehicles)
+  - PHEV (Plug-in Hybrids)
+  - EV (total)
+  - Non-EVs  
+  
+  It highlights the share of EVs in the overall vehicle population.
+
+---
+
+  ### 🔹 Actual vs Predicted EV Count
+  
+  <img width="834" height="464" alt="Screenshot 2025-07-27 020344" src="https://github.com/user-attachments/assets/b1670a25-18d8-4b3d-9a95-411761c70fc5" />
+  
+  * Line plot showing the RandomForest model's predictions vs actual EV counts across sample indices.  
+  * Close overlap indicates strong model accuracy.
+
+---
+
+  ### 🔹 Feature Importance
+  
+  <img width="744" height="422" alt="Screenshot 2025-07-27 020430" src="https://github.com/user-attachments/assets/81d49953-9d79-4387-ac7b-6fe5188603d6" />
+
+  Bar plot displaying the importance scores of engineered features like:
+  - Lag values
+  - Rolling averages
+  - Percent changes
+    
+  Used to assess the model's key drivers of prediction.
+
+  ---
+
+  ### 🔹 County-Level Forecast: Kings County (Monthly)
+  
+  <img width="814" height="394" alt="Screenshot 2025-07-27 020449" src="https://github.com/user-attachments/assets/f032cca3-b224-4873-b34d-88133f4b4824" />
+
+  Historical vs 36-month forecast for **Kings County** showing monthly EV growth trends.
+
+  ---
+
+  ### 🔹 Cumulative EV Forecast: Kings County
+  
+ <img width="811" height="403" alt="Screenshot 2025-07-27 020505" src="https://github.com/user-attachments/assets/53d7e30e-0e77-4177-b1de-4b49d286cc28" />
+  
+  Chart showing cumulative EV adoption over time, including projected growth for the next 3 years.
+
+  ---
+
+  ### 🔹 Top 5 Counties Forecast
+  
+  <img width="826" height="401" alt="Screenshot 2025-07-27 020524" src="https://github.com/user-attachments/assets/04411510-47cf-4528-9c1a-e438d80c080b" />
+  
+  Visualization of historical and projected cumulative EV growth for the top 5 counties:
+  - Fairfax
+  - Honolulu
+  - Los Angeles
+  - Orange
+  - Santa Clara
+
+---
 
 ## 💾 Model Persistence
    
