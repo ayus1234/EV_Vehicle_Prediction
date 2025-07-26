@@ -88,16 +88,49 @@ The dataset should include columns such as:
 - **Model**: `RandomForestRegressor`
 - **Tuning**: `RandomizedSearchCV` with cross-validation
 
+---
+
+## 📌 Results
+
 ### ✅ Evaluation Metrics
 
-| Metric   | Value  |
-|----------|--------|
-| MAE      | 0.007  |
-| RMSE     | 0.06   |
-| R² Score | 1.00   |
+| Metric   | Value   |
+|----------|---------|
+| MAE      | 132.76  |
+| RMSE     | 200.45  |
+| R² Score | 0.89    |
 
-- Extremely high R² score confirms the model performs very well on the test data.
+These results indicate a strong model performance with relatively low error compared to the scale of EV counts.
 
+---
+
+### 🧾 Sample Output
+
+```text
+        Date         County       Predicted_EV_Total
+0   2025-08-01      Kings             14527
+1   2025-09-01      Kings             14862
+2   2025-10-01      Kings             15230
+3   2025-11-01      Kings             15575
+4   2025-12-01      Kings             15940
+5   2026-01-01      Kings             16294
+```
+
+---
+
+## 💾 Model Persistence
+
+  * Model saved to: forecasting_ev_model.pkl
+  * Successfully reloaded and tested.
+
+---
+
+## 🔍 Single Sample Test
+
+  ```text
+  Actual EVs:    1025.00  
+  Predicted EVs: 998.23
+  ```
 ---
 
 ## 🔮 Forecasting
