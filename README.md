@@ -15,6 +15,19 @@ Using the `Electric_Vehicle_Population_By_County.csv` dataset, this project:
 - Evaluates model performance and visualizes feature importance.
 - Forecasts EV adoption for any given county over the next 3 years.
 - Saves and tests the trained model with `joblib`.
+- Deploys an interactive forecasting tool via Streamlit (`app.py`).
+
+---
+
+## 🚀 Interactive Forecasting App
+
+You can interact with the model using the built-in Streamlit dashboard.
+
+### 🔧 To run the app locally:
+
+```bash
+streamlit run app.py
+```
 
 ---
 
@@ -145,6 +158,14 @@ Includes:
 - Combined historical and future trendlines
 - Visual comparison of growth rates across counties
 
+### 🌍 Multi-County Comparison
+
+The Streamlit app supports:
+
+- Selecting up to 3 counties
+- Side-by-side EV growth comparison
+- Growth % summaries
+
 ---
 
 ## 📊 Visualizations
@@ -251,23 +272,22 @@ Includes:
    jupyter notebook ev_forecasting.ipynb
    ```
 
+4. **Run the Streamlit App**
+   
+   To launch the interactive forecaster:
+
+   ```bash
+   streamlit run app.py
+   ```
+
 ---
 
-## 📈 Model and Evaluation
+## 🆚 Notebook vs App: When to Use What?
 
-   * Model: RandomForestRegressor
-
-   * Tuning: RandomizedSearchCV with cross-validation
-
-   * Metrics:
-
-      * MAE (Mean Absolute Error)
-
-      * RMSE (Root Mean Square Error)
-
-      * R² Score
-
-   The trained model is saved as `forecasting_ev_model.pkl`.
+| Tool                  | Purpose                                                  |
+|-----------------------|----------------------------------------------------------|
+| `ev_forecasting.ipynb`| Explore full data pipeline, modeling, and evaluation     |
+| `app.py`              | Interactive forecasting tool for end-users              |
 
 ---
 
@@ -276,8 +296,8 @@ Includes:
    * Integrate demographic data like population, income, or GDP by county.
    * Try gradient boosting models like XGBoost or LightGBM.
    * Explore deep learning with LSTM for sequential forecasting.
-   * Deploy the model with a Flask/Dash API or Streamlit dashboard.
-
+   * Deploy via Docker or to Streamlit Cloud for public access.
+     
 ---
 
 ## 📃 License
