@@ -304,3 +304,6 @@ The Streamlit app supports:
    This project is open-source and licensed under the [MIT License](./LICENSE).
 
 ---
+
+## 🙌 Credits
+  Prepared for the AICTE Internship Cycle 2 by S4F
