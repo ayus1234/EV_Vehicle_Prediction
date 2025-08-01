@@ -5,6 +5,10 @@ This project provides a comprehensive pipeline to forecast the total number of E
 
 ---
 
+> 🔗 **Live Demo**: [Streamlit App – EV Vehicle Prediction](https://evvehicleprediction-wfzpte93uzo9f7kkkmqhqp.streamlit.app/)
+
+---
+
 ## 📊 Project Overview
 
 Using the `Electric_Vehicle_Population_By_County.csv` dataset, this project:
