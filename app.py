@@ -73,13 +73,6 @@ st.markdown("""
             border: 1px solid #3b82f6;
         }
         
-        .growth-comparison {
-            background-color: var(--card-color);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
         .footer {
             text-align: center;
             padding: 1.5rem;
@@ -88,8 +81,6 @@ st.markdown("""
             font-size: 0.9rem;
             border-top: 1px solid var(--border-color);
         }
-        
-        /* Add more styling as needed */
     </style>
 """, unsafe_allow_html=True)
 
@@ -173,27 +164,6 @@ def calculate_metrics(actual, predicted):
     mape = np.mean(np.abs((actual - predicted) / actual)) * 100
     return mae, rmse, mape
 
-def calculate_growth_rates(historical_df, forecast_df):
-    """Calculate various growth rate metrics"""
-    # Monthly growth rates
-    monthly_growth = forecast_df['Predicted EV Total'].pct_change() * 100
-    
-    # Overall growth rate
-    hist_avg = historical_df['Electric Vehicle (EV) Total'].mean()
-    forecast_avg = forecast_df['Predicted EV Total'].mean()
-    overall_growth = ((forecast_avg - hist_avg) / hist_avg) * 100 if hist_avg != 0 else 0
-    
-    # Cumulative growth
-    hist_total = historical_df['Electric Vehicle (EV) Total'].sum()
-    forecast_total = forecast_df['Predicted EV Total'].sum()
-    cumulative_growth = ((forecast_total - hist_total) / hist_total) * 100 if hist_total != 0 else 0
-    
-    return {
-        'monthly_growth': monthly_growth,
-        'overall_growth': overall_growth,
-        'cumulative_growth': cumulative_growth
-    }
-
 # === Header Section ===
 st.markdown("""
     <div class="header-title">
@@ -218,8 +188,13 @@ st.markdown("""
 
 # === Sidebar ===
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Flag_of_Washington.svg/1200px-Flag_of_Washington.svg.png", 
-             width=100)
+    try:
+        st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Flag_of_Washington.svg/1200px-Flag_of_Washington.svg.png",
+                width=100,
+                caption="Washington State")
+    except:
+        st.warning("Couldn't load state image")
+    
     st.markdown("## Settings")
     analysis_type = st.radio(
         "Analysis Type",
@@ -288,11 +263,9 @@ if analysis_type == "Single County Forecast":
     # Metrics
     last_year_historical = historical_df[historical_df['Date'] >= (historical_df['Date'].max() - pd.DateOffset(years=1))]
     if len(last_year_historical) >= 12 and show_metrics:
-        # For metrics, use the last year of historical data to test the model
         test_dates = last_year_historical['Date'].values
         test_actual = last_year_historical['EV Count'].values
         
-        # Generate predictions for the test period
         test_predictions = []
         temp_hist = list(historical_df[historical_df['Date'] < test_dates[0]]['EV Count'].values[-6:])
         temp_cum = list(np.cumsum(temp_hist))
@@ -455,9 +428,8 @@ if analysis_type == "Single County Forecast":
                 with cols[col_idx]:
                     st.markdown("### Seasonality Analysis")
                     
-                    # Prepare data for seasonality decomposition
                     ts_data = historical_df.set_index('Date')['EV Count']
-                    if len(ts_data) >= 24:  # Need at least 2 years for seasonality
+                    if len(ts_data) >= 24:
                         result = seasonal_decompose(ts_data, model='additive', period=12)
                         
                         fig = make_subplots(
@@ -503,43 +475,48 @@ if analysis_type == "Single County Forecast":
                 with cols[col_idx]:
                     st.markdown("### Monthly Breakdown")
                     
-                    # Combine historical and forecast with month names
                     monthly_data = pd.concat([
                         historical_df.assign(Period='Historical'),
                         forecast_plot_df.assign(Period='Forecast')
-                    ])
+                    ]).copy()
                     
                     monthly_data['Month'] = monthly_data['Date'].dt.month.apply(lambda x: calendar.month_abbr[x])
+                    monthly_data['Year'] = monthly_data['Date'].dt.year
                     
-                    # Pivot for heatmap
-                    heatmap_data = monthly_data.pivot_table(
-                        index='Month',
-                        columns='Year',
-                        values='EV Count',
-                        aggfunc='mean'
-                    )
+                    monthly_data = monthly_data.dropna(subset=['Month', 'Year', 'EV Count'])
                     
-                    # Reorder months correctly
-                    month_order = [calendar.month_abbr[i] for i in range(1, 13)]
-                    heatmap_data = heatmap_data.reindex(month_order)
-                    
-                    fig = px.imshow(
-                        heatmap_data,
-                        labels=dict(x="Year", y="Month", color="EV Count"),
-                        aspect="auto",
-                        color_continuous_scale='Viridis',
-                        template='plotly_dark'
-                    )
-                    
-                    fig.update_layout(
-                        title="Monthly EV Adoption Heatmap",
-                        xaxis_title="Year",
-                        yaxis_title="Month"
-                    )
-                    
-                    st.plotly_chart(fig, use_container_width=True)
-        
-        # Raw data preview
+                    if not monthly_data.empty:
+                        try:
+                            heatmap_data = monthly_data.pivot_table(
+                                index='Month',
+                                columns='Year',
+                                values='EV Count',
+                                aggfunc='mean'
+                            )
+                            
+                            month_order = [calendar.month_abbr[i] for i in range(1, 13)]
+                            heatmap_data = heatmap_data.reindex(month_order)
+                            
+                            fig = px.imshow(
+                                heatmap_data,
+                                labels=dict(x="Year", y="Month", color="EV Count"),
+                                aspect="auto",
+                                color_continuous_scale='Viridis',
+                                template='plotly_dark'
+                            )
+                            
+                            fig.update_layout(
+                                title="Monthly EV Adoption Heatmap",
+                                xaxis_title="Year",
+                                yaxis_title="Month"
+                            )
+                            
+                            st.plotly_chart(fig, use_container_width=True)
+                        except Exception as e:
+                            st.error(f"Could not create heatmap: {str(e)}")
+                    else:
+                        st.warning("No data available for monthly breakdown")
+    
         st.markdown("### Data Preview")
         st.dataframe(combined_plot_df.sort_values('Date', ascending=False).head(10))
 
@@ -598,15 +575,11 @@ elif analysis_type == "Multi-County Comparison":
         combined_df = pd.concat([historical_df, forecast_plot_df])
         combined_df['County'] = county
         
-        # Calculate cumulative values
         combined_df['Cumulative EV'] = combined_df.groupby('County')['EV Count'].cumsum()
-        
-        # Calculate growth rates (month-over-month)
         combined_df['Growth Rate'] = combined_df.groupby('County')['EV Count'].pct_change() * 100
         
         comparison_data.append(combined_df)
         
-        # Calculate overall growth rate for the county
         hist_total = historical_df['EV Count'].sum()
         forecast_total = forecast_plot_df['EV Count'].sum()
         growth_pct = (forecast_total / (hist_total / (len(historical_df) / len(forecast_plot_df))) - 1) * 100
@@ -618,7 +591,6 @@ elif analysis_type == "Multi-County Comparison":
     
     comparison_df = pd.concat(comparison_data)
     
-    # Visualization based on selected metric
     if comparison_metric == "Cumulative Count":
         st.markdown("### Cumulative EV Adoption Comparison")
         
@@ -671,7 +643,7 @@ elif analysis_type == "Multi-County Comparison":
         
         st.plotly_chart(fig, use_container_width=True)
         
-    else:  # Growth Rate
+    else:
         st.markdown("### Growth Rate Comparison (%)")
         
         fig = px.line(
@@ -697,7 +669,6 @@ elif analysis_type == "Multi-County Comparison":
         
         st.plotly_chart(fig, use_container_width=True)
     
-    # Display comparison table
     st.markdown("### Comparison Summary")
     
     summary_data = []
@@ -729,7 +700,6 @@ elif analysis_type == "Multi-County Comparison":
         use_container_width=True
     )
     
-    # Add download button
     csv = comparison_df.to_csv(index=False)
     st.download_button(
         label="Download Comparison Data",
@@ -738,10 +708,9 @@ elif analysis_type == "Multi-County Comparison":
         mime='text/csv'
     )
 
-else:  # Growth Rate Analysis
-    st.markdown("## Growth Rate Comparison")
+else:
+    st.markdown("## Growth Rate Analysis")
     
-    # Select counties for comparison
     county_list = sorted(df['County'].dropna().unique().tolist())
     selected_counties = st.multiselect(
         "Select Counties to Compare",
@@ -762,7 +731,6 @@ else:  # Growth Rate Analysis
         st.warning("Please select at least one county")
         st.stop()
     
-    # Prepare data for each county
     growth_data = []
     
     for county in selected_counties:
@@ -772,15 +740,12 @@ else:  # Growth Rate Analysis
             st.warning(f"No data available for {county} county.")
             continue
         
-        # Generate forecast
         forecast_df = generate_forecast(county_df, forecast_horizon)
         
-        # Calculate growth metrics
         hist_avg = county_df['Electric Vehicle (EV) Total'].mean()
         forecast_avg = forecast_df['Predicted EV Total'].mean()
         growth_pct = ((forecast_avg - hist_avg) / hist_avg) * 100 if hist_avg != 0 else 0
         
-        # Calculate cumulative growth
         hist_total = county_df['Electric Vehicle (EV) Total'].sum()
         forecast_total = forecast_df['Predicted EV Total'].sum()
         cumulative_growth = ((forecast_total - hist_total) / hist_total) * 100 if hist_total != 0 else 0
@@ -797,13 +762,10 @@ else:  # Growth Rate Analysis
         st.error("No valid data available for growth rate analysis")
         st.stop()
     
-    # Create growth rate comparison visualization
     st.markdown("### Projected Growth Percentage by County")
     
-    # Convert to DataFrame for easier plotting
     growth_df = pd.DataFrame(growth_data)
     
-    # Create bar chart for growth comparison
     fig = px.bar(
         growth_df,
         x='County',
@@ -831,13 +793,10 @@ else:  # Growth Rate Analysis
     
     st.plotly_chart(fig, use_container_width=True)
     
-    # Display detailed growth metrics
     st.markdown("### Detailed Growth Metrics")
     
-    # Create a copy for display with formatted percentages
     display_df = growth_df.copy()
     
-    # Apply background gradient before formatting as percentages
     styled_df = (display_df.style
                 .background_gradient(subset=['Growth Percentage', 'Cumulative Growth'], cmap='RdYlGn')
                 .format({
@@ -847,10 +806,8 @@ else:  # Growth Rate Analysis
                     'Forecasted Average': '{:.1f}'
                 }))
     
-    # Display the styled dataframe
     st.dataframe(styled_df, use_container_width=True)
     
-    # Add explanation card
     st.markdown("""
         <div class="card">
             <h3>Growth Rate Explanation</h3>
@@ -858,3 +815,12 @@ else:  # Growth Rate Analysis
             <p><strong>Cumulative Growth:</strong> The total percentage increase in EVs over the forecast period compared to historical totals.</p>
         </div>
     """, unsafe_allow_html=True)
+
+# === Footer ===
+st.markdown("---")
+st.markdown("""
+    <div class="footer">
+        <p>Developed for AICTE Internship Cycle 2 | Powered by Streamlit</p>
+        <p>Data Source: Washington State Department of Licensing | Last Updated: {}</p>
+    </div>
+""".format(datetime.now().strftime("%B %d, %Y")), unsafe_allow_html=True)
