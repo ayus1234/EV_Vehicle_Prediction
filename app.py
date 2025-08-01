@@ -9,11 +9,6 @@ from plotly.subplots import make_subplots
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 import calendar
 from statsmodels.tsa.seasonal import seasonal_decompose
-from sklearn.exceptions import InconsistentVersionWarning
-import warnings
-
-# Suppress version warnings
-warnings.filterwarnings("ignore", category=InconsistentVersionWarning)
 
 # Set Streamlit page config
 st.set_page_config(
@@ -93,18 +88,9 @@ st.markdown("""
 @st.cache_resource
 def load_model():
     try:
-        model = joblib.load('forecasting_ev_model.pkl')
-        
-        # Add compatibility attributes if missing
-        if not hasattr(model, 'feature_names_in_'):
-            model.feature_names_in_ = ['months_since_start', 'county_encoded', 
-                                     'ev_total_lag1', 'ev_total_lag2', 'ev_total_lag3',
-                                     'ev_total_roll_mean_3', 'ev_total_pct_change_1',
-                                     'ev_total_pct_change_3', 'ev_growth_slope']
-            
-        return model
-    except Exception as e:
-        st.error(f"Model loading failed: {str(e)}")
+        return joblib.load('forecasting_ev_model.pkl')
+    except:
+        st.error("Model file not found. Please ensure 'forecasting_ev_model.pkl' is in the directory.")
         st.stop()
 
 @st.cache_data
@@ -113,8 +99,8 @@ def load_data():
         df = pd.read_csv("preprocessed_ev_data.csv")
         df['Date'] = pd.to_datetime(df['Date'])
         return df
-    except Exception as e:
-        st.error(f"Data loading failed: {str(e)}")
+    except:
+        st.error("Data file not found. Please ensure 'preprocessed_ev_data.csv' is in the directory.")
         st.stop()
 
 model = load_model()
@@ -152,24 +138,7 @@ def generate_forecast(county_df, forecast_horizon=36):
             'ev_growth_slope': ev_growth_slope
         }
 
-        try:
-            # Convert to DataFrame with proper structure
-            X = pd.DataFrame([new_row])
-            
-            # Ensure column order matches training
-            if hasattr(model, 'feature_names_in_'):
-                X = X[model.feature_names_in_]
-            
-            # Handle different model versions
-            if hasattr(model, 'estimators_'):
-                pred = model.estimators_[0].predict(X)[0]  # Use first estimator for compatibility
-            else:
-                pred = model.predict(X)[0]
-                
-        except Exception as e:
-            st.error(f"Prediction failed for {county_df['County'].iloc[0]}: {str(e)}")
-            pred = county_df['Electric Vehicle (EV) Total'].mean()  # Fallback to mean value
-
+        pred = model.predict(pd.DataFrame([new_row]))[0]
         future_rows.append({
             "Date": forecast_date, 
             "Predicted EV Total": round(pred),
@@ -232,6 +201,7 @@ with st.sidebar:
         ["Single County Forecast", "Multi-County Comparison", "Growth Rate Analysis"],
         index=0
     )
+    
 
 # === Main Content ===
 if analysis_type == "Single County Forecast":
@@ -323,15 +293,8 @@ if analysis_type == "Single County Forecast":
                 'ev_growth_slope': ev_slope
             }
             
-            try:
-                X = pd.DataFrame([new_row])
-                if hasattr(model, 'feature_names_in_'):
-                    X = X[model.feature_names_in_]
-                pred = model.predict(X)[0]
-                test_predictions.append(pred)
-            except Exception as e:
-                st.error(f"Test prediction failed: {str(e)}")
-                test_predictions.append(test_actual[i])  # Fallback to actual value
+            pred = model.predict(pd.DataFrame([new_row]))[0]
+            test_predictions.append(pred)
             
             temp_hist.append(test_actual[i])
             if len(temp_hist) > 6:
