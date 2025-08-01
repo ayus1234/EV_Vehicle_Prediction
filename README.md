@@ -235,6 +235,99 @@ The Streamlit app supports:
 
 ---
 
+# 📊 Dashboard Insights & Visualizations
+
+The interactive dashboard provides actionable insights into EV adoption trends through dynamic visualizations and comparative analysis. Below are key components demonstrated through the app's outputs:
+
+---
+
+## 🔍 Single-County Deep Dive
+
+<img width="1063" height="576" alt="Screenshot 2025-08-01 171732" src="https://github.com/user-attachments/assets/30e4501b-abc2-42af-afa2-4a6b77e11173" />
+
+**Features:**
+
+- **County Selection:** Analyze specific counties (e.g., Ada) with adjustable forecast horizons (12–60 months).
+
+**Model Metrics:**
+
+- **MAE:** 0.1  
+- **RMSE:** 0.3  
+- **MAPE:** 4.8%
+
+**Advanced Options:**
+
+- Seasonality analysis  
+- Monthly breakdowns  
+- Historical vs. forecasted comparisons
+
+**Example Insights:**
+
+- **Ada County** shows a projected increase from **1.5 to 2.0 EVs/month** (*31.1% growth rate*).
+
+---
+
+## 📈 Trend Visualizations
+
+### Monthly Adoption Forecast
+
+<img width="1064" height="504" alt="Screenshot 2025-08-01 171750" src="https://github.com/user-attachments/assets/59b25a8e-9600-46c4-b8c9-a1cffb5d170f" />
+
+Tracks granular monthly EV counts (e.g., 1.2 to 2.0 EVs/month in Ada).
+
+### Cumulative Adoption Projection
+
+<img width="1025" height="498" alt="Screenshot 2025-08-01 171802" src="https://github.com/user-attachments/assets/5c18acbc-26fd-435d-950a-d1198cf6b8b0" />
+
+Visualizes long-term EV accumulation (e.g., ~150 EVs by 2027 in Ada).
+
+### Forecast Data Preview
+
+<img width="983" height="549" alt="Screenshot 2025-08-01 174840" src="https://github.com/user-attachments/assets/a746efe8-95dd-4fd7-b969-d2ea0d324e11" />
+
+Tabular preview of forecasted values (e.g., consistent 2 EVs/month for Ada in 2026–2027).
+
+---
+
+## ↔️ Multi-County Benchmarking
+
+<img width="980" height="468" alt="Screenshot 2025-08-01 175015" src="https://github.com/user-attachments/assets/737f3543-0e8b-4a2e-af2b-6c5c6a298331" />
+
+**Features:**
+
+- Compare up to 3 counties (e.g., Ada vs. Alameda).
+- Metrics: Cumulative counts, monthly adoption rates, or growth percentages.
+
+### Key Results
+
+<img width="979" height="498" alt="Screenshot 2025-08-01 175036" src="https://github.com/user-attachments/assets/6345f163-449f-4acd-83fa-2a87eca779ec" />
+
+Side-by-side historical and forecasted trends.
+
+**Highlighted Metrics:**
+
+- **Autauga:** 104.7% growth (1.9 → 3.9 EVs/month)  
+- **Alameda:** 7.3% growth despite a **-52.3% cumulative decline**
+
+---
+
+## 📉 Growth Rate Breakdown
+
+<img width="973" height="258" alt="Screenshot 2025-08-01 175320" src="https://github.com/user-attachments/assets/cefbc13b-2697-4ba1-bf85-b08db889450e" />
+
+Bar charts comparing county-level growth percentages.
+
+<img width="960" height="505" alt="Screenshot 2025-08-01 175414" src="https://github.com/user-attachments/assets/d4dd26f0-6074-4127-b4c0-bb4ab9487520" />
+
+### Tabulated Summaries:
+
+| County   | Historical EVs | Forecasted EVs | Growth Rate |
+|----------|----------------|----------------|-------------|
+| Ada      | 90             | 72             | 31.1%       |
+| Alameda  | 302            | 144            | 7.3%        |
+
+---
+
 ## 📁 Files
 
 | File                                | Description                               |
