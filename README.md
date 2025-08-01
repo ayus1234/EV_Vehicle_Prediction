@@ -71,18 +71,6 @@ The dataset should include columns such as:
 
 ---
 
-## ⚙️ Features Engineered
-
-- Lag features (1 to 3 months)
-- Rolling means
-- Percent changes
-- Cumulative totals
-- Linear growth slope over rolling windows
-- Encoded county identifiers
-- Time since county EV data began
-
----
-
 ## 📈 Model and Evaluation
 
 - **Model**: `RandomForestRegressor`
